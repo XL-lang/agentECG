@@ -1,0 +1,15 @@
+api:
+  llm:
+    aliyun:
+      qwen-plus:
+        model: openai/qwen-plus
+        api_key: sk-4adde4b6a443403f9ea8f85c54042995
+        api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+      qwen-vl-plus:
+        model: qwen-vl-plus
+        api_key: sk-4adde4b6a443403f9ea8f85c54042995
+        api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+  search-engine:
+    google:
+      api_key: AIzaSyCkh7lkm12r3NxsyANkRMRVM-gOPlkaSAI
+ 

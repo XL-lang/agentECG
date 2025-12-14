@@ -1,0 +1,4 @@
+dataset/*
+!dataset/config.py
+*.pyc
+__pycache__/
