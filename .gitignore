@@ -1,4 +1,5 @@
 dataset/*
 !dataset/config.py
 *.pyc
+test_tools/results/*
 __pycache__/

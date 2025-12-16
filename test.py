@@ -3,33 +3,42 @@ import json
 import numpy as np
 from data.EcgQaData import EcgQaDataset
 import matplotlib.pyplot as plt
+import traceback
 from mAgents.pre_analysis_agent import pre_analysis_agent
+from dataset.config import get_ecgqa_answer_check_prompt,ecg_qa_types
 from mAgents.data_analysis_agent import data_analysis_agent
+from utils.prompt import (
+    get_pathology_inquiry_prompt,
+    get_ecg_analysis_prompt,
+)
+from mAgents.llm_checker import LLM_checker
 
 # Initialize
 ptbxl_dir_path = r"dataset/ecgqa_ptbxl/paraphrased/train"
-EcgQaDataset_instance = EcgQaDataset(ptbxl_dir_path)
+
+filtered_question_types = [i for i in ecg_qa_types if "choose" in i]
+
+EcgQaDataset_instance = EcgQaDataset(ptbxl_dir_path, question_types=filtered_question_types, sample_limit=1)
 
 # Output file for results
 output_file = "test_results.json"
 results = []
 
-# ECG usage documentation
-usage = """
-The get_lead_signals(self, lead_name: str) method retrieves the ECG signal data for a specified lead. It takes a single argument, lead_name, which must be a string matching one of the available lead names (e.g., 'II', 'V1'). The method returns a one-dimensional NumPy array of shape (n_samples,) containing the raw signal values for that lead. If the provided lead_name is not found in the signal's lead list, a ValueError is raised. For example, calling ecg.get_lead_signals('II') might return an array like [0.12, -0.03, 0.05, 0.18, -0.01, ...], representing the first few samples of lead II.
+dataset_iter = iter(EcgQaDataset_instance)
 
-The get_lead_segment(self, lead_name: str, segment_name: str) method extracts time indices of specific ECG waveforms or intervals from a given lead. It requires two arguments: lead_name (a valid lead name) and segment_name, which must be one of the following six predefined types: 'P wave', 'QRS complex', 'T wave', 'PR interval', 'QT interval', or 'ST segment'. The method returns a list of tuples, where each tuple (start, end) denotes the sample indices of a detected segment. For instance, ecg.get_lead_segment('II', 'QRS complex') could return [(1250, 1270), (2505, 2525), ...], indicating the start and end points of detected QRS complexes in lead II.
+iteration = 0
 
-Both methods assume the underlying ECG signal has been properly loaded and processed. The indices returned by get_lead_segment are in sample units and can be converted to time in seconds by dividing by the sampling frequency (fs). Invalid lead names or unsupported segment types will raise a ValueError. These methods are designed for programmatic access to both raw signals and structured morphological features of the ECG.
-"""
-
-# Run 50 iterations
-for iteration in range(50):
+# Loop until the dataset is fully traversed
+while True:
     try:
-        print(f"Processing iteration {iteration + 1}/50...", end=" ")
+        # Load next sample; exit when exhausted
+        try:
+            sample = next(dataset_iter)
+        except StopIteration:
+            break
         
-        # Load sample from dataset
-        sample = next(iter(EcgQaDataset_instance))
+        iteration += 1
+        print(f"Processing iteration {iteration}...", end=" ")
         
         # Extract data
         question = sample["question"]
@@ -46,20 +55,15 @@ for iteration in range(50):
         info = ecgs_list[0].base_info()
         ecg_names = list(ecgs.keys())
         
-        # Pathology Inquiry
-        PI_prompt = f"Please act as an expert physician and analyze the following electrocardiogram (ECG) question. Which ECG features should be examined to answer the question? The question is {question}"
+        # Pathology Inquiry (prompt from utils)
+        PI_prompt = get_pathology_inquiry_prompt(question)
         PI_res = pre_analysis_agent.run(PI_prompt)
         
-        # Data Analysis
-        DA_prompt = f"""
-This is the question you need to answer: {question}.
-
-Here is the expert's analytical advice; please follow this guidance to conduct your analysis: {PI_res}.
-
-The relevant electrocardiogram (ECG) data has already been loaded into memory, with the variable name: {ecg_names},the base info of the ecg is{info}. This is how to use the ECG class:{usage}
-
-Use available methods and library functions as much as possible to perform the analysis, and finally provide your answer.
-"""
+        # Data Analysis (prompt from utils) + answer checker
+        question_type = sample["question_type"]
+        DA_prompt = get_ecg_analysis_prompt(question, question_type, PI_res, ecg_names, info)
+        check_prompt = get_ecgqa_answer_check_prompt(question_type, sample["answer"],None)
+        data_analysis_agent.final_answer_checks = [LLM_checker(check_prompt).check]
         data_analysis_agent.state.update(ecgs)
         final_res = data_analysis_agent.run(DA_prompt)
         
@@ -82,7 +86,8 @@ Use available methods and library functions as much as possible to perform the a
         print("✓ Completed")
         
     except Exception as e:
-        print(f"✗ Error: {str(e)}")
+        print("✗ Error encountered. Full traceback:")
+        print(traceback.format_exc())
         continue
 
-print(f"\nAll iterations completed. Results saved to {output_file}")
+print(f"\nAll iterations completed after {iteration} items. Results saved to {output_file}")

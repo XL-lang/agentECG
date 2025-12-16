@@ -9,9 +9,10 @@ import scipy.io
 from pathlib import Path
 import wfdb
 from .EcgSignals import EcgSignals
+from dataset.config import ecg_qa_types
 
 class EcgQaDataset(IterableDataset):
-    def __init__(self,dataset_dir:str):
+    def __init__(self,dataset_dir:str,question_types:Optional[List[str]]=None,sample_limit:Optional[int]=None):
         """
         PyTorch IterableDataset for ECG-QA data.
 
@@ -24,6 +25,16 @@ class EcgQaDataset(IterableDataset):
         self.file_index = 0
         self.current_file_data = []
         self.current_data_index = 0
+        self.sample_limit = sample_limit
+        self.question_types = question_types
+        self.question_types_limit = None
+        if (self.question_types is not None)and (self.sample_limit is not None):
+            self.question_types_limit = {qt: self.sample_limit for qt in self.question_types}   
+        elif (self.sample_limit is not None):
+            self.question_types_limit = {}
+            for qt in ecg_qa_types:
+                self.question_types_limit[qt] = self.sample_limit
+
     
     def __str__(self):
         """Return a user-friendly string representation"""
@@ -44,6 +55,18 @@ class EcgQaDataset(IterableDataset):
 
             while self.current_data_index < len(self.current_file_data):
                 sample = self.current_file_data[self.current_data_index]
+                if self.question_types is not None:
+                    qt = sample.get('question_type')
+                    if qt not in self.question_types:
+                        self.current_data_index += 1
+                        continue
+                if self.question_types_limit is not None:
+                    qt = sample.get('question_type')
+                    if self.question_types_limit[qt] <= 0:
+                        self.current_data_index += 1
+                        continue
+                    self.question_types_limit[qt] -= 1
+
                 self.current_data_index += 1
                 ecg_paths = sample.get('ecg_path')
                 ecg_datas = []

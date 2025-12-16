@@ -1,9 +1,10 @@
 from smolagents import CodeAgent
 from utils import code_model,clean_memory,support_oppose_check
+from mAgents.fig_anaysis_tool import QRSMorphologyClassifierTool
 import yaml
 with open('configs/data_analysis_agent.yaml', 'r') as file:
     prompt = yaml.safe_load(file)
-data_analysis_agent = CodeAgent(tools=[], 
+data_analysis_agent = CodeAgent(tools=[QRSMorphologyClassifierTool()], 
                        model=code_model, 
                        add_base_tools=False,
                        planning_interval=10,
