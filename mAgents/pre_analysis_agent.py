@@ -4,14 +4,15 @@ from .function_search_tool import search_tool
 import yaml
 with open('configs/data_analysis_agent.yaml', 'r') as file:
     prompt = yaml.safe_load(file)
-pre_analysis_agent = CodeAgent(tools=[search_tool], 
+def create_pre_analysis_agent():
+    return CodeAgent(tools=[], 
                        model=code_model, 
                        add_base_tools=False,
                        additional_authorized_imports= ["numpy.*","statsmodels.*","sklearn.*","scipy.*","pandas.*","ast.*","pandas.*","holidays","threading"],
                        description="This agent is responsible for completing search-related tasks.",
                        name = "search_agent",
                        step_callbacks = [clean_memory],
-                       prompt_templates=prompt,
+                       prompt_templates=prompt, # type: ignore
                        )
 
 
@@ -23,6 +24,6 @@ Here are two sequences, both showing the trend of changes in the number of touri
 A. Both curves have two peaks.  
 B. Both curves decline on June 27th.
 """
-    pre_analysis_agent.run(
+    create_pre_analysis_agent().run(
         prompt,
     )

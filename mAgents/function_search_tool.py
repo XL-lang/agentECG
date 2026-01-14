@@ -2,8 +2,9 @@ from utils import reason_client
 from smolagents import Tool
 
 class SearchTool(Tool):
+    weight = 3
     name= "search_tool"
-    description= "This tool uses large models to perform searches."
+    description= f"This tool uses large models to perform searches. The weight of this tool is {weight}."
     inputs = {
         "task":{
             "type": "string",

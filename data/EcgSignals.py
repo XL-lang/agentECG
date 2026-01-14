@@ -237,6 +237,11 @@ class EcgSignals:
         # Filter intervals within bounds
         return [interval for interval in intervals 
                 if lower_bound <= (interval[1] - interval[0]) <= upper_bound]
+    def trans_fs(self, fs: int):
+        if self.fs != fs:
+            self.signals = self.signals * (fs / self.fs)
+            self.fs = fs
+        
 
         
     

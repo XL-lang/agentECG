@@ -49,24 +49,27 @@ class FigAnaysisTool(Tool):
         
         return completion.choices
     
-class QRSMorphologyClassifierTool(FigAnaysisTool):
-    name = "qrs_morphology_classifier_tool"
-    description = "Classify the QRS morphology from the given ECG figure."
+class ECGFigAnaysiser(FigAnaysisTool):
+    name = "ECG_fig_anaysis_tool"
+    weight = 3
+    description = f"Input an ECG sequence and the question to be analyzed, and return the analysis result. It's best not to input more than three cycle lengths at once. The weight of this tool is {weight}."
     inputs = {
         "data": {
             "type": "array",
-            "description": "1D ECG signal samples.",
+            "description": "1D ECG signal samples, it's best not to input more than three cycle lengths at once.",
         },
         "fs": {
             "type": "integer",
             "description": "Sampling frequency in Hz.",
         },
+        "question": {
+            "type": "string",
+            "description": "The question to be analyzed regarding the ECG signal.",
+        },
     }
     
 
-    prompt_template = """
-Please help me classify the morphology of the QRS complexes shown in the figure—similar to labels like "Qrs"—and return the results of the morphological classification.
-"""
+    
     def make_image(self, data: Union[List[float], np.ndarray], fs: int):
         if isinstance(data, list):
             data = np.array(data)
@@ -85,10 +88,13 @@ Please help me classify the morphology of the QRS complexes shown in the figure�
         plt.savefig('ecg_output.png')
         plt.close()
         return 'ecg_output.png'
-    
-    def forward(self, data: Union[List[float], np.ndarray], fs: int): # type: ignore
+
+    def forward(self, data: Union[List[float], np.ndarray], fs: int, question: str): # type: ignore
+        prompt_template = f"""
+You are an expert in ECG signal analysis. Given the ECG signal figure, please analyze it based on the following question: {question}
+"""
         figure = self.make_image(data, fs)
-        prompt = self.prompt_template
+        prompt = prompt_template
         return super().forward(prompt, figure)
     
 if __name__ == "__main__":
@@ -102,6 +108,6 @@ if __name__ == "__main__":
     for center in [0.5, 1.1, 1.7]:
         signal += 1.2 * np.exp(-0.5 * ((t - center) / 0.01) ** 2)
 
-    tool = QRSMorphologyClassifierTool()
+    tool = ECGFigAnaysiser()
     result = tool.forward(signal, fs)
     print(result)

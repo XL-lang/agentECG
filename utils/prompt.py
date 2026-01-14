@@ -1,9 +1,19 @@
-def get_pathology_inquiry_prompt(question) -> str:
+from typing import Dict, List
+from mAgents.fig_anaysis_tool import ECGFigAnaysiser
+def get_local_models() -> str:
+    name = ECGFigAnaysiser.name
+    description = ECGFigAnaysiser.description
     prompt_template = f"""
-    Please act as an experienced physician and analyze the following electrocardiogram (ECG) question. Which ECG features should be examined to answer the question? The question is: {question}.
+The available local model is as follows:    {name}: {description}
+    """
+    return prompt_template
+def get_pathology_inquiry_prompt(question,choices, report) -> str:
+    prompt_template = f"""
+    Please act as an experienced physician and analyze the following electrocardiogram (ECG) question. Which ECG features should be examined to answer the question? The question is: {question}.Please choose one or more answers from the following options: {choices}.
 
-Use search tools to identify the relevant ECG features, then exclude those that are difficult to analyze programmatically. After curating the list, consult the search results to determine how to perform the analysis using existing packages and functions as much as possible. The ECG class you can use is {get_ecgSignals_doc_prompt()}.
-
+Use search tools to identify the relevant ECG features, then exclude those that are difficult to analyze programmatically. After curating the list, consult the search results to determine how to perform the analysis using existing packages and functions as much as possible. The ECG class you can use is {get_ecgSignals_doc_prompt()}. The available local models for ECG image analysis are: {get_local_models()}
+Both ECG image analysis tools and code-based methods can be used to analyze ECG signals. Please evaluate the noise and interference robustness of the retrieved code implementations for processing each ECG feature, assign a weighted robustness score, compare them with image analysis tools, and finally select the method (either code-based or image-based) with the higher weight score.
+This is the analysis result provided by the AI model. If possible, you can refer to the AI model's output to narrow down the search scope. {report}
 Finally, organize your response into two parts:
 1. The features that need to be analyzed, including an explanation of how each feature influences the answer.
 2. Example code snippets for performing the analysis.
@@ -22,22 +32,25 @@ Both methods assume the underlying ECG signal has been properly loaded and proce
 """
     return prompt_template
 
-def get_ecg_analysis_prompt(question, question_type, PI_res, ecg_names, info, ) -> str:
+def get_ecg_analysis_prompt(question, choices, PI_res, ecg_names, info, model_agent_res) -> str:
     usage = get_ecgSignals_doc_prompt()
-    answer_prompt = ""
-    if "verify" in question_type:
-        answer_prompt = "the response should only contain lowercase yes or no and should not include any other content"
-    elif "choose" in question_type:
-        answer_prompt = "the response should be one of the options in the question or 'none' if none of the options are suitable, and should not include any other content"
     DA_prompt = f"""
-This is the question you need to answer: {question}.
+This is the question you need to answer: {question}. Please choose one or more answers from the following options: {choices}.
 
 Here is the expert's analytical advice; please follow this guidance to conduct your analysis: {PI_res}.
 
 The relevant electrocardiogram (ECG) data has already been loaded into memory, with the variable name: {ecg_names},the base info of the ecg is{info}. This is how to use the ECG class:{usage}
 
+This is the analysis result provided by the AI model. If possible, you can refer to the AI model's output to narrow down the search scope. {model_agent_res}
+
 Use available methods and library functions as much as possible to perform the analysis, and finally provide your answer.
 
-the answer should follow these rules: {answer_prompt}
 """
     return DA_prompt
+
+def get_model_agent_prompt(question:str, choices:List[str], fix_reports: Dict[str, str], ) -> str:
+    gma_prompt = f"""
+    Please act as a doctor to organize the conclusions of the AI model regarding ECG issues. This is the question: {question}, and these are the possible options: {choices}. This is the result of the fixed model analysis: {fix_reports}, and these are the additional models you can call upon: {""}, using the following method:.
+Please organize the conclusions based on the question and the possible options, and do not retain conclusions unrelated to the question. The format should be a conclusion followed by a dict of the basis. The basis can be the confidence level of the fixed model or the analysis conclusions of the additional models.
+    """
+    return gma_prompt

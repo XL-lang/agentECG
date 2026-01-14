@@ -1,5 +1,11 @@
 dataset/*
 !dataset/config.py
+*.png
 *.pyc
+*.log
+*.pkl
+*.pth
 test_tools/results/*
 __pycache__/
+example_ecg/*
+test_results.json
