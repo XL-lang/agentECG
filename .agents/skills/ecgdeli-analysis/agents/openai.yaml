@@ -1,0 +1,4 @@
+interface:
+  display_name: "ECGdeli Analysis"
+  short_description: "Run structured ECG delineation and interval/amplitude extraction through MATLAB ECGdeli."
+  default_prompt: "Use $ecgdeli-analysis for fiducial points, interval timing, QT/QRS/PR/RR measurements, and amplitude extraction from ECG matrices."

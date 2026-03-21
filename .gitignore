@@ -1,11 +1,36 @@
-dataset/*
+# Keep the dataset directory visible in the repo while ignoring dataset contents.
+dataset/**
+!dataset/
+!dataset/__init__.py
 !dataset/config.py
-*.png
+!dataset/load_dataset.sh
+!dataset/test.md
+
+# Python cache and local notebook artifacts.
+__pycache__/
 *.pyc
+.ipynb_checkpoints/
+
+# Runtime logs and ad-hoc local outputs.
 *.log
+app.log
+*.png
+ecg_output.png
+
+# Model artifacts and serialized training outputs.
 *.pkl
 *.pth
-test_tools/results/*
-__pycache__/
-example_ecg/*
 test_results.json
+models/pytorch_inception/output/
+utils/model.yaml
+
+# Test and experiment outputs.
+test_tools/results/
+tmp/*.log
+tmp/*results*.json
+tmp/ecgdeli_example_out/
+tmp/ecgdeli_granular_*/
+tmp/ecgdeli_run_*/
+
+# Sample input data kept local.
+example_ecg/*

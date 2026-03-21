@@ -1,12 +1,13 @@
 from utils import reason_client
 import typing
+
 class LLM_checker:
     def __init__(self, check_prompt):
         self.check_prompt = check_prompt
     def check(self, answer, mem):
         if self.check_prompt is None:
             return True, "No check needed"
-        synthetic_prompt = f"The task requirement is: \n{self.check_prompt}\nYour responses should not include the question, and please verify that the number of answers is correct.  The answer is: \n{answer}\n Please determine if the answer meets the task requirements. If it does, respond with '#PASS', otherwise respond with 'no' and specific issues that did not meet the requirements."
+        synthetic_prompt = f"{self.check_prompt}{answer}"
         completion = reason_client.chat.completions.create(
         model="qwen-plus",
         messages=[
@@ -37,5 +38,3 @@ class ECGQA_EMA_checker:
             if len(answer_set) > 1:
                 return False, f"The allowed responses are: {self.choices}. Extract from the response using regular expressions to get your answer: {answer_set}. Note that (yes, no, none) can only appear in single responses. Please revise your answer to avoid ambiguity."
         return True, "Valid  answer"
-        
-        

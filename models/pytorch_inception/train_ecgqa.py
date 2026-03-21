@@ -53,7 +53,7 @@ class ECGQAClassificationDatasetWrapper(Dataset):
         self.sample_metadata = []  # 存储样本的元数据（ecg_path, answer等）
         actual_input_ecg_num = None
         sample_count = 0
-
+        ecgqa_dataset.set_lazy(True)
         for sample in tqdm(ecgqa_dataset, desc=f"Collecting metadata for template {self.template_id}"):
             # 从第一个样本获取actual_input_ecg_num
             if actual_input_ecg_num is None:
@@ -170,9 +170,13 @@ class ECGQAClassificationDatasetWrapper(Dataset):
 
         # 标准化（仅在apply_scaling=True且scaler已fit时应用）
         if apply_scaling and hasattr(self.scaler, 'mean_'):
-            signal_shape = final_signal.shape
-            final_signal = self.scaler.transform(
-                final_signal.flatten()[:, np.newaxis]).reshape(signal_shape)
+            signal_shape = final_signal.shape  # (seq_len, 12)
+            # scaler期望输入是(n_samples, 12)，所以reshape成(-1, 12)
+            # (seq_len, 12)
+            final_signal_reshaped = final_signal.reshape(-1, 12)
+            final_signal_scaled = self.scaler.transform(
+                final_signal_reshaped)  # (seq_len, 12)
+            final_signal = final_signal_scaled.reshape(signal_shape)  # 恢复原始形状
 
         return final_signal
 
@@ -467,7 +471,7 @@ def main():
     parser.add_argument('--output_dir', type=str, default='./output',
                         help='输出目录')
     parser.add_argument('--batch_size', type=int, default=16, help='批次大小')
-    parser.add_argument('--epochs', type=int, default=15, help='训练轮数')
+    parser.add_argument('--epochs', type=int, default=25, help='训练轮数')
     parser.add_argument('--lr', type=float, default=0.001, help='学习率')
     parser.add_argument('--seq_len', type=int, default=1000, help='序列长度（采样点数）')
     parser.add_argument('--depth', type=int, default=9, help='模型深度')
@@ -526,7 +530,7 @@ def main():
             print(f"\n训练template {template_id}时出错: {e}")
             import traceback
             traceback.print_exc()
-            continue
+            exit(1)
 
     print("\n" + "=" * 80)
     print("所有模板训练完成！")
@@ -535,3 +539,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+# python -m models.pytorch_inception.train_ecgqa  --template_ids 42 --seq_len 3000

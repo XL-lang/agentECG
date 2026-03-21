@@ -1,0 +1,884 @@
+[
+  {
+    "created_at": "2026-05-05T16:05:04.900207+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "qrs_duration",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "491525c6fda6878d",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-qrs_duration",
+      "description": "Temporary corrective feature-level bundle for `qrs_duration` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qrs_duration",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `qrs_duration` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qrs_duration",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qrs_duration` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qrs_duration evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132622"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:03:58.130347+00:00",
+      "updated_at": "2026-05-05T16:03:58.130347+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "a321a2601a28",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132622",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "qrs_duration",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qrs_duration` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'electrodes problems']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132622",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:05:04.901030+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "qt_interval",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "3a0ab01231d95e5b",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-qt_interval",
+      "description": "Temporary corrective feature-level bundle for `qt_interval` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qt_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `qt_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qt_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qt_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qt_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132622"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:03:58.130347+00:00",
+      "updated_at": "2026-05-05T16:03:58.130347+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "2dba8fa0e9f9",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132622",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "qt_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qt_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'electrodes problems']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132622",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:05:04.901464+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "pr_interval",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "3d065d5cfc5f92e1",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-pr_interval",
+      "description": "Temporary corrective feature-level bundle for `pr_interval` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: pr_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `pr_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "pr_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `pr_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "pr_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132622"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:03:58.130347+00:00",
+      "updated_at": "2026-05-05T16:03:58.130347+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "5952758aa58f",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132622",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "pr_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `pr_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'electrodes problems']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132622",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:09:57.039676+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "qrs_duration",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "491525c6fda6878d",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-qrs_duration",
+      "description": "Temporary corrective feature-level bundle for `qrs_duration` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qrs_duration",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `qrs_duration` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qrs_duration",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qrs_duration` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qrs_duration evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132624"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:08:52.440486+00:00",
+      "updated_at": "2026-05-05T16:08:52.440486+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "a321a2601a28",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132624",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "qrs_duration",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qrs_duration` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'burst noise', 'electrodes problems', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132624",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:09:57.042035+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "qt_interval",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "3a0ab01231d95e5b",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-qt_interval",
+      "description": "Temporary corrective feature-level bundle for `qt_interval` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qt_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `qt_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qt_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qt_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qt_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132624"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:08:52.440486+00:00",
+      "updated_at": "2026-05-05T16:08:52.440486+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "2dba8fa0e9f9",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132624",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "qt_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qt_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'burst noise', 'electrodes problems', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132624",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:09:57.043721+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "pr_interval",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "3d065d5cfc5f92e1",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-pr_interval",
+      "description": "Temporary corrective feature-level bundle for `pr_interval` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: pr_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `pr_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "pr_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `pr_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "pr_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132624"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:08:52.440486+00:00",
+      "updated_at": "2026-05-05T16:08:52.440486+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "5952758aa58f",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132624",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "pr_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `pr_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'burst noise', 'electrodes problems', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132624",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:12:10.716186+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "qrs_duration",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "491525c6fda6878d",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-qrs_duration",
+      "description": "Temporary corrective feature-level bundle for `qrs_duration` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qrs_duration",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `qrs_duration` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qrs_duration",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qrs_duration` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qrs_duration evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132625"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:11:12.660275+00:00",
+      "updated_at": "2026-05-05T16:11:12.660275+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "a321a2601a28",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132625",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "qrs_duration",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qrs_duration` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'burst noise', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132625",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:12:10.717284+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "qt_interval",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "3a0ab01231d95e5b",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-qt_interval",
+      "description": "Temporary corrective feature-level bundle for `qt_interval` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qt_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `qt_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qt_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qt_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qt_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132625"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:11:12.660275+00:00",
+      "updated_at": "2026-05-05T16:11:12.660275+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "2dba8fa0e9f9",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132625",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "qt_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qt_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'burst noise', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132625",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  },
+  {
+    "created_at": "2026-05-05T16:12:10.718057+00:00",
+    "reason": "explicit pending review",
+    "feature_scope": "pr_interval",
+    "skill_source": "failure_retry",
+    "status": "pending_review",
+    "candidate": {
+      "skill_id": "3d065d5cfc5f92e1",
+      "agent_name": "data_analysis_agent",
+      "name": "retry-correct-pr_interval",
+      "description": "Temporary corrective feature-level bundle for `pr_interval` derived from a failed attempt and gold-answer supervision.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: pr_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Retry-only correction workflow: verify `pr_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "pr_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `pr_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "pr_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132625"
+      ],
+      "confidence": 0.64,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T16:11:12.660275+00:00",
+      "updated_at": "2026-05-05T16:11:12.660275+00:00",
+      "success_count": 0,
+      "failure_count": 0,
+      "reflection_notes": [],
+      "last_reflection": "",
+      "family_id": "5952758aa58f",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132625",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "failure_retry",
+      "feature_scope": "pr_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `pr_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "gold_answer",
+        "retry_success"
+      ],
+      "status": "pending_review",
+      "origin_prediction": "['baseline drift', 'burst noise', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    "existing": null,
+    "source_question_ids": [
+      "1841"
+    ],
+    "source_task_refs": [
+      {
+        "sample_id": "132625",
+        "question_id": "1841",
+        "template_id": "33"
+      }
+    ],
+    "from_failure_retry": true
+  }
+]

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ECGdeli"
+  short_description: "Run MATLAB ECGdeli ECG delineation."
+  default_prompt: "Use $ecgdeli to annotate ECG signals and extract fiducial-point features."

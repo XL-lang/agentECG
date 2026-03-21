@@ -1,6 +1,5 @@
 import os
 from data.EcgQaData import EcgQaDataset
-from dataset.config import ecg_qa_types
 
 def initialize_dataset(ptbxl_dir_path=None, question_types=None, sample_limit=1, shuffle=True, seed=42):
     """
@@ -18,15 +17,10 @@ def initialize_dataset(ptbxl_dir_path=None, question_types=None, sample_limit=1,
     """
     if ptbxl_dir_path is None:
         ptbxl_dir_path = r"dataset/ecgqa_ptbxl/paraphrased/train"
-    
-    if question_types is None:
-        filtered_question_types = [i for i in ecg_qa_types if "query" in i]
-    else:
-        filtered_question_types = question_types
-    
+
     EcgQaDataset_instance = EcgQaDataset(
         ptbxl_dir_path, 
-        question_types=filtered_question_types, 
+        question_types=question_types, 
         sample_limit=sample_limit, 
         shuffle=shuffle, 
         seed=seed
@@ -35,4 +29,3 @@ def initialize_dataset(ptbxl_dir_path=None, question_types=None, sample_limit=1,
     dataset_iter = iter(EcgQaDataset_instance)
     
     return EcgQaDataset_instance, dataset_iter
-

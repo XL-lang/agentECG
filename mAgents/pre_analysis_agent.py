@@ -1,15 +1,15 @@
 from smolagents import CodeAgent
 from utils import code_model,clean_memory,support_oppose_check
-from .function_search_tool import search_tool
+from .function_search_tool import SearchTool
 import yaml
 with open('configs/data_analysis_agent.yaml', 'r') as file:
     prompt = yaml.safe_load(file)
 def create_pre_analysis_agent():
-    return CodeAgent(tools=[], 
+    return CodeAgent(tools=[SearchTool()], 
                        model=code_model, 
                        add_base_tools=False,
                        additional_authorized_imports= ["numpy.*","statsmodels.*","sklearn.*","scipy.*","pandas.*","ast.*","pandas.*","holidays","threading"],
-                       description="This agent is responsible for completing search-related tasks.",
+                       description="This agent is responsible for local-first planning and optional remote medical search. It must not execute ECG_fig_anaysis_tool, ECGDeli_prepare_tool, or ECGDeli_measurement_tool; those belong to data_analysis_agent.",
                        name = "search_agent",
                        step_callbacks = [clean_memory],
                        prompt_templates=prompt, # type: ignore

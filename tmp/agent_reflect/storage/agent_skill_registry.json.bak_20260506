@@ -1,0 +1,775 @@
+{
+  "skills": [
+    {
+      "skill_id": "ccd7d412d128c18d",
+      "agent_name": "data_analysis_agent",
+      "name": "read-single-lead-signal",
+      "description": "Read a single ECG lead waveform using the documented ECG API before computing lead-local evidence.",
+      "level": "micro",
+      "category": "measurement",
+      "input_requirements": [
+        "ecg object",
+        "valid lead name"
+      ],
+      "procedure_summary": "Call `ecg.get_lead_signals(lead_name)` and limit subsequent analysis to one lead-level claim at a time.",
+      "evidence_pattern": [
+        "get_lead_signals(",
+        "lead signal",
+        "raw signal"
+      ],
+      "tool_dependencies": [],
+      "applicability": "Use when a feature can be measured directly from one lead waveform.",
+      "failure_modes": [
+        "Lead name is unavailable",
+        "Waveform is too noisy for reliable numeric measurement"
+      ],
+      "source_sample_ids": [
+        "130466",
+        "130467",
+        "130468"
+      ],
+      "confidence": 0.49999999999999983,
+      "reuse_count": 5,
+      "created_at": "2026-05-05T07:15:24.609872+00:00",
+      "updated_at": "2026-05-05T16:58:21.316173+00:00",
+      "success_count": 4,
+      "failure_count": 6,
+      "reflection_notes": [
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays normal sinus rhythm with distinct P waves, QRS complexes, and T waves. The amplitude and timing are consistent with a healthy ECG signal..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays distinct P waves, sharp QRS complexes, and smooth T waves, consistent with a normal PR segment. There are no obvious signs of incorrect segmentation or boundary errors..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. The task may have leaned too heavily on tool-routed morphology evidence or interpreted tool evidence too strongly. VLM audit signal: no_eligible_variables.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform exhibits a normal sinus rhythm with a well-defined P wave, followed by a PR interval, QRS complex, and a T wave that is upright in lead II. The boundaries align with the expected timing for the 'pr' segment..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology.."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology..",
+      "family_id": "41930d7ed6de",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1762"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "130466",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130467",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130468",
+          "question_id": "1762",
+          "template_id": "30"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "",
+      "action_bundle": [],
+      "validation_basis": [],
+      "status": "active",
+      "origin_prediction": "",
+      "origin_gold": [],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "000f87be9ec0f507",
+      "agent_name": "data_analysis_agent",
+      "name": "extract-ecg-segment-window",
+      "description": "Use segment boundaries to isolate a waveform or interval before measurement.",
+      "level": "micro",
+      "category": "measurement",
+      "input_requirements": [
+        "ecg object",
+        "valid lead name",
+        "segment name"
+      ],
+      "procedure_summary": "Call `ecg.get_lead_segment(lead_name, segment_name)` and derive measurements from one returned `(start, end)` window.",
+      "evidence_pattern": [
+        "get_lead_segment(",
+        "start, end",
+        "segment"
+      ],
+      "tool_dependencies": [],
+      "applicability": "Use when a feature depends on a known ECG segment such as QRS, QT, T wave, or PR.",
+      "failure_modes": [
+        "Segment is not detected",
+        "Requested segment type is unsupported"
+      ],
+      "source_sample_ids": [
+        "130466",
+        "130467",
+        "130468"
+      ],
+      "confidence": 0.6399999999999999,
+      "reuse_count": 2,
+      "created_at": "2026-05-05T07:15:24.609872+00:00",
+      "updated_at": "2026-05-05T16:58:21.316194+00:00",
+      "success_count": 2,
+      "failure_count": 3,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. A duration-style conclusion may have depended on missing or weakly verified sampling-frequency evidence. VLM slice audit was valid, so the failure should not be attributed to segment slicing without additional evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays normal sinus rhythm with distinct P waves, QRS complexes, and T waves. The amplitude and timing are consistent with a healthy ECG signal..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology.."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology..",
+      "family_id": "cc8bfeaf9f65",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1762"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "130466",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130467",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130468",
+          "question_id": "1762",
+          "template_id": "30"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "",
+      "action_bundle": [],
+      "validation_basis": [],
+      "status": "active",
+      "origin_prediction": "",
+      "origin_gold": [],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "4838f357152c95b0",
+      "agent_name": "data_analysis_agent",
+      "name": "convert-segment-index-to-duration",
+      "description": "Convert ECG sample indices into time duration only when sampling frequency is verified.",
+      "level": "micro",
+      "category": "measurement",
+      "input_requirements": [
+        "segment start/end indices",
+        "verified fs"
+      ],
+      "procedure_summary": "Compute duration with `(end - start) * 1000 / fs` after confirming that `fs` is available from documented context.",
+      "evidence_pattern": [
+        "1000 / fs",
+        "duration",
+        "ms"
+      ],
+      "tool_dependencies": [],
+      "applicability": "Use for QT, PR, QRS, RR, or similar duration-style questions.",
+      "failure_modes": [
+        "Sampling frequency is missing or undocumented",
+        "Segment boundaries are unreliable"
+      ],
+      "source_sample_ids": [
+        "130466",
+        "130467",
+        "130468"
+      ],
+      "confidence": 0.71,
+      "reuse_count": 5,
+      "created_at": "2026-05-05T07:15:24.609872+00:00",
+      "updated_at": "2026-05-05T16:51:20.351969+00:00",
+      "success_count": 4,
+      "failure_count": 3,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. A duration-style conclusion may have depended on missing or weakly verified sampling-frequency evidence. VLM slice audit was valid, so the failure should not be attributed to segment slicing without additional evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays normal sinus rhythm with distinct P waves, QRS complexes, and T waves. The amplitude and timing are consistent with a healthy ECG signal..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform exhibits a normal sinus rhythm with a well-defined P wave, followed by a PR interval, QRS complex, and a T wave that is upright in lead II. The boundaries align with the expected timing for the 'pr' segment.."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform exhibits a normal sinus rhythm with a well-defined P wave, followed by a PR interval, QRS complex, and a T wave that is upright in lead II. The boundaries align with the expected timing for the 'pr' segment..",
+      "family_id": "09e5876bfe4b",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1762"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "130466",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130467",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130468",
+          "question_id": "1762",
+          "template_id": "30"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "",
+      "action_bundle": [],
+      "validation_basis": [],
+      "status": "active",
+      "origin_prediction": "",
+      "origin_gold": [],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "4bf7794392687baa",
+      "agent_name": "data_analysis_agent",
+      "name": "refuse-duration-claim-without-fs",
+      "description": "Avoid duration-based conclusions when the task does not provide a verified sampling frequency.",
+      "level": "micro",
+      "category": "fallback",
+      "input_requirements": [
+        "duration-like feature request"
+      ],
+      "procedure_summary": "Before computing any duration, verify `fs` from documented context; otherwise mark the duration claim unverified instead of hard-coding a value.",
+      "evidence_pattern": [
+        "fs",
+        "not provided",
+        "must be obtained"
+      ],
+      "tool_dependencies": [],
+      "applicability": "Use whenever durations in ms are required but sampling frequency is not documented.",
+      "failure_modes": [
+        "Hidden assumptions about `fs` slip into code",
+        "Undocumented ECG attributes are treated as guaranteed"
+      ],
+      "source_sample_ids": [
+        "130466",
+        "130467",
+        "130468"
+      ],
+      "confidence": 0.85,
+      "reuse_count": 2,
+      "created_at": "2026-05-05T07:15:24.609872+00:00",
+      "updated_at": "2026-05-05T16:07:00.081293+00:00",
+      "success_count": 3,
+      "failure_count": 1,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. A duration-style conclusion may have depended on missing or weakly verified sampling-frequency evidence. VLM slice audit was valid, so the failure should not be attributed to segment slicing without additional evidence."
+      ],
+      "last_reflection": "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+      "family_id": "82010dc0eee5",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1762"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "130466",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130467",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130468",
+          "question_id": "1762",
+          "template_id": "30"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "",
+      "action_bundle": [],
+      "validation_basis": [],
+      "status": "active",
+      "origin_prediction": "",
+      "origin_gold": [],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "65274da5d87be80d",
+      "agent_name": "data_analysis_agent",
+      "name": "route-morphology-checks-to-visual-tool",
+      "description": "Route visually defined or noise-sensitive morphology claims to the ECG figure analysis tool.",
+      "level": "micro",
+      "category": "tool-routing",
+      "input_requirements": [
+        "lead waveform",
+        "verified fs for plotting when required",
+        "morphology question"
+      ],
+      "procedure_summary": "When the feature is mainly visual or fragile under simple numeric rules, call `ECG_fig_anaysis_tool` and treat the result as supporting evidence.",
+      "evidence_pattern": [
+        "ECG_fig_anaysis_tool",
+        "visual inspection",
+        "noise-sensitive"
+      ],
+      "tool_dependencies": [
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use for scooped ST, subtle contour change, or similar morphology-heavy evidence.",
+      "failure_modes": [
+        "Tool output is treated as direct ground truth",
+        "Too many cycles are passed to the visual tool at once"
+      ],
+      "source_sample_ids": [
+        "130466",
+        "130467",
+        "130468"
+      ],
+      "confidence": 0.6699999999999999,
+      "reuse_count": 4,
+      "created_at": "2026-05-05T07:15:24.609872+00:00",
+      "updated_at": "2026-05-05T16:12:10.721227+00:00",
+      "success_count": 3,
+      "failure_count": 4,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. A duration-style conclusion may have depended on missing or weakly verified sampling-frequency evidence. VLM slice audit was valid, so the failure should not be attributed to segment slicing without additional evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays normal sinus rhythm with distinct P waves, QRS complexes, and T waves. The amplitude and timing are consistent with a healthy ECG signal..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays distinct P waves, sharp QRS complexes, and smooth T waves, consistent with a normal PR segment. There are no obvious signs of incorrect segmentation or boundary errors..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. The task may have leaned too heavily on tool-routed morphology evidence or interpreted tool evidence too strongly. VLM audit signal: no_eligible_variables."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. The task may have leaned too heavily on tool-routed morphology evidence or interpreted tool evidence too strongly. VLM audit signal: no_eligible_variables.",
+      "family_id": "46477878ecb0",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1762"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "130466",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130467",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130468",
+          "question_id": "1762",
+          "template_id": "30"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "",
+      "action_bundle": [],
+      "validation_basis": [],
+      "status": "active",
+      "origin_prediction": "",
+      "origin_gold": [],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "1647c24820e6592f",
+      "agent_name": "data_analysis_agent",
+      "name": "consume-ecgdeli-measurement-result",
+      "description": "Interpret fine-grained ECGdeli measurement output as task evidence without turning tool selection itself into a learned skill.",
+      "level": "micro",
+      "category": "measurement",
+      "input_requirements": [
+        "ECGDeli measurement result JSON",
+        "validated question-to-feature mapping"
+      ],
+      "procedure_summary": "Read ECGdeli measurement fields such as `value`, `units`, `feature_name`, `wave_name`, or `samples`, then map only the validated fine-grained result back to the allowed answer choices.",
+      "evidence_pattern": [
+        "ECGDeli_measurement_tool",
+        "feature_name",
+        "wave_name",
+        "value"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool"
+      ],
+      "applicability": "Use after ECGdeli has already been called and returned a fine-grained interval, amplitude, fiducial-point, or slice result relevant to the task.",
+      "failure_modes": [
+        "ECGDeli measurement status is not ok",
+        "A narrow ECGdeli measurement is over-interpreted beyond the requested feature claim"
+      ],
+      "source_sample_ids": [
+        "130466",
+        "130467",
+        "130468"
+      ],
+      "confidence": 0.75,
+      "reuse_count": 0,
+      "created_at": "2026-05-05T07:15:24.609872+00:00",
+      "updated_at": "2026-05-05T07:22:04.448854+00:00",
+      "success_count": 2,
+      "failure_count": 1,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. A duration-style conclusion may have depended on missing or weakly verified sampling-frequency evidence. VLM slice audit was valid, so the failure should not be attributed to segment slicing without additional evidence."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. A duration-style conclusion may have depended on missing or weakly verified sampling-frequency evidence. VLM slice audit was valid, so the failure should not be attributed to segment slicing without additional evidence.",
+      "family_id": "57bebc39a8b1",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1762"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "130466",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130467",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130468",
+          "question_id": "1762",
+          "template_id": "30"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "",
+      "action_bundle": [],
+      "validation_basis": [],
+      "status": "active",
+      "origin_prediction": "",
+      "origin_gold": [],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "35d4ac9437ffd9e1",
+      "agent_name": "data_analysis_agent",
+      "name": "map-validated-feature-evidence-to-choice",
+      "description": "Map validated feature evidence back to the allowed answer choices instead of producing free-form diagnoses.",
+      "level": "micro",
+      "category": "decision-rule",
+      "input_requirements": [
+        "validated feature evidence",
+        "allowed answer options"
+      ],
+      "procedure_summary": "Compare only validated evidence against the provided answer options and select the matching option names explicitly.",
+      "evidence_pattern": [
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [],
+      "applicability": "Use for multi-choice ECGQA tasks where answers must come from a fixed option list.",
+      "failure_modes": [
+        "Evidence is weaker than the claimed answer",
+        "The response contains diagnoses outside the provided options"
+      ],
+      "source_sample_ids": [
+        "130466",
+        "130467",
+        "130468"
+      ],
+      "confidence": 0.7,
+      "reuse_count": 4,
+      "created_at": "2026-05-05T07:15:24.609872+00:00",
+      "updated_at": "2026-05-05T16:07:00.081298+00:00",
+      "success_count": 3,
+      "failure_count": 2,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. A duration-style conclusion may have depended on missing or weakly verified sampling-frequency evidence. VLM slice audit was valid, so the failure should not be attributed to segment slicing without additional evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays normal sinus rhythm with distinct P waves, QRS complexes, and T waves. The amplitude and timing are consistent with a healthy ECG signal.."
+      ],
+      "last_reflection": "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+      "family_id": "66430eecd1dc",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1762"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "130466",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130467",
+          "question_id": "1762",
+          "template_id": "30"
+        },
+        {
+          "sample_id": "130468",
+          "question_id": "1762",
+          "template_id": "30"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "",
+      "action_bundle": [],
+      "validation_basis": [],
+      "status": "active",
+      "origin_prediction": "",
+      "origin_gold": [],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "f9c23145d40e8518",
+      "agent_name": "data_analysis_agent",
+      "name": "analyze-qrs_duration",
+      "description": "Reusable feature-level analysis bundle for `qrs_duration` extracted from a correct execution trace.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qrs_duration",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Feature workflow: verify `qrs_duration` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qrs_duration",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qrs_duration` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qrs_duration evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132623"
+      ],
+      "confidence": 0.6199999999999999,
+      "reuse_count": 1,
+      "created_at": "2026-05-05T16:07:00.072874+00:00",
+      "updated_at": "2026-05-05T16:58:21.316200+00:00",
+      "success_count": 2,
+      "failure_count": 4,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays distinct P waves, sharp QRS complexes, and smooth T waves, consistent with a normal PR segment. There are no obvious signs of incorrect segmentation or boundary errors..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. The task may have leaned too heavily on tool-routed morphology evidence or interpreted tool evidence too strongly. VLM audit signal: no_eligible_variables.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform exhibits a normal sinus rhythm with a well-defined P wave, followed by a PR interval, QRS complex, and a T wave that is upright in lead II. The boundaries align with the expected timing for the 'pr' segment..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology.."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology..",
+      "family_id": "a321a2601a28",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132623",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "qrs_duration",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qrs_duration` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "final_answer_match",
+        "retry_success"
+      ],
+      "status": "active",
+      "origin_prediction": "['baseline drift', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "2e904a594e69bd77",
+      "agent_name": "data_analysis_agent",
+      "name": "analyze-qt_interval",
+      "description": "Reusable feature-level analysis bundle for `qt_interval` extracted from a correct execution trace.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: qt_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Feature workflow: verify `qt_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "qt_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `qt_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "qt_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132623"
+      ],
+      "confidence": 0.6199999999999999,
+      "reuse_count": 1,
+      "created_at": "2026-05-05T16:07:00.072874+00:00",
+      "updated_at": "2026-05-05T16:58:21.316203+00:00",
+      "success_count": 2,
+      "failure_count": 4,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays distinct P waves, sharp QRS complexes, and smooth T waves, consistent with a normal PR segment. There are no obvious signs of incorrect segmentation or boundary errors..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. The task may have leaned too heavily on tool-routed morphology evidence or interpreted tool evidence too strongly. VLM audit signal: no_eligible_variables.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform exhibits a normal sinus rhythm with a well-defined P wave, followed by a PR interval, QRS complex, and a T wave that is upright in lead II. The boundaries align with the expected timing for the 'pr' segment..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology.."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology..",
+      "family_id": "2dba8fa0e9f9",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132623",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "qt_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `qt_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "final_answer_match",
+        "retry_success"
+      ],
+      "status": "active",
+      "origin_prediction": "['baseline drift', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    },
+    {
+      "skill_id": "2c5bc0c7d3848b73",
+      "agent_name": "data_analysis_agent",
+      "name": "analyze-pr_interval",
+      "description": "Reusable feature-level analysis bundle for `pr_interval` extracted from a correct execution trace.",
+      "level": "micro",
+      "category": "reflective-analysis",
+      "input_requirements": [
+        "ecg object",
+        "feature target: pr_interval",
+        "valid lead name",
+        "verified sampling frequency for duration claims"
+      ],
+      "procedure_summary": "Feature workflow: verify `pr_interval` with the smallest valid evidence path, then read target lead waveform before drawing a feature conclusion; slice the narrowest ECG segment associated with the feature; consume ECGdeli feature-level measurement output for the target feature; route morphology-sensitive verification to the visual ECG tool; verify sampling frequency and convert sample span into duration only after confirmation.",
+      "evidence_pattern": [
+        "pr_interval",
+        "baseline drift",
+        "burst noise",
+        "electrodes problems",
+        "none",
+        "static noise"
+      ],
+      "tool_dependencies": [
+        "ECGDeli_measurement_tool",
+        "ECG_fig_anaysis_tool"
+      ],
+      "applicability": "Use when the task depends on verifying `pr_interval` through a reusable feature-level workflow.",
+      "failure_modes": [
+        "pr_interval evidence is mapped to the wrong answer option",
+        "task-specific answer text is copied instead of re-deriving evidence",
+        "sampling frequency is assumed instead of verified",
+        "segment boundaries are reused without checking they match the feature",
+        "visual-tool output is treated as direct truth instead of supporting evidence"
+      ],
+      "source_sample_ids": [
+        "132623"
+      ],
+      "confidence": 0.6199999999999999,
+      "reuse_count": 1,
+      "created_at": "2026-05-05T16:07:00.072874+00:00",
+      "updated_at": "2026-05-05T16:58:21.316206+00:00",
+      "success_count": 2,
+      "failure_count": 4,
+      "reflection_notes": [
+        "Prediction matched the gold answer. Reusable skills that contributed to this task should be reinforced and reused on similar questions. Correct outcome with task-grounded evidence.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform displays distinct P waves, sharp QRS complexes, and smooth T waves, consistent with a normal PR segment. There are no obvious signs of incorrect segmentation or boundary errors..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. The task may have leaned too heavily on tool-routed morphology evidence or interpreted tool evidence too strongly. VLM audit signal: no_eligible_variables.",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The waveform exhibits a normal sinus rhythm with a well-defined P wave, followed by a PR interval, QRS complex, and a T wave that is upright in lead II. The boundaries align with the expected timing for the 'pr' segment..",
+        "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology.."
+      ],
+      "last_reflection": "Prediction did not match the gold answer. The current task should produce corrective feedback so the reused skills do not become over-trusted. VLM morphology audit suggests the checked slice is broadly compatible with the target feature, so the failure is more likely due to threshold direction, evidence weighting, or answer-option mapping after measurement. VLM morphology assessment: The segment displays a normal PR interval with a gradual upward slope leading into the QRS complex, consistent with typical PR segment morphology..",
+      "family_id": "5952758aa58f",
+      "conflict_with": [],
+      "source_question_ids": [
+        "1841"
+      ],
+      "source_task_refs": [
+        {
+          "sample_id": "132623",
+          "question_id": "1841",
+          "template_id": "33"
+        }
+      ],
+      "source_trace_file": "/home/xl/agentECG/tmp/agent_reflect/storage/agent_skill_sources.jsonl",
+      "skill_source": "success_trace",
+      "feature_scope": "pr_interval",
+      "action_bundle": [
+        "read target lead waveform before drawing a feature conclusion",
+        "slice the narrowest ECG segment associated with the feature",
+        "consume ECGdeli feature-level measurement output for the target feature",
+        "route morphology-sensitive verification to the visual ECG tool",
+        "verify sampling frequency and convert sample span into duration only after confirmation",
+        "map validated `pr_interval` evidence back to the allowed answer choices"
+      ],
+      "validation_basis": [
+        "final_answer_match",
+        "retry_success"
+      ],
+      "status": "active",
+      "origin_prediction": "['baseline drift', 'static noise']",
+      "origin_gold": [
+        "none"
+      ],
+      "applies_on_retry_only": false
+    }
+  ]
+}

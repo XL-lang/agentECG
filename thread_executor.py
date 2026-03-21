@@ -1,25 +1,68 @@
 import json
+from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any, Callable, Iterator
 
 
-def run_multithreaded_processing(dataset_iter, process_func, max_workers=5, output_file="test_results.json"):
+@dataclass(frozen=True)
+class AgentExecutionOptions:
+    save_agent_mem: bool = False
+    agent_mem_file: str = "agent_memories.json"
+    run_mode: str = "eval"
+
+
+@dataclass(frozen=True)
+class AgentTask:
+    iteration: int
+    sample: dict[str, Any]
+    options: AgentExecutionOptions
+
+
+@dataclass(frozen=True)
+class AgentTaskResult:
+    iteration: int
+    result_entry: dict[str, Any] | None
+    error: str | None = None
+
+
+def _write_ordered_results(results_by_iter: dict[int, dict[str, Any]], output_file: str) -> None:
+    ordered_results = [results_by_iter[i] for i in sorted(results_by_iter)]
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(ordered_results, f, indent=2, ensure_ascii=False)
+
+
+def _normalize_result(result: AgentTaskResult | tuple[int, dict[str, Any] | None, str | None]) -> AgentTaskResult:
+    if isinstance(result, AgentTaskResult):
+        return result
+
+    iter_idx, result_entry, error = result
+    return AgentTaskResult(iteration=iter_idx, result_entry=result_entry, error=error)
+
+
+def run_multithreaded_processing(
+    dataset_iter: Iterator[dict[str, Any]],
+    process_func: Callable[[AgentTask], AgentTaskResult | tuple[int, dict[str, Any] | None, str | None]],
+    max_workers: int = 5,
+    output_file: str = "test_results.json",
+    save_agent_mem: bool = False,
+    agent_mem_file: str = "agent_memories.json",
+    run_mode: str = "eval",
+) -> int:
     """
-    使用多线程处理数据集样本
-    
-    Args:
-        dataset_iter: 数据集迭代器
-        process_func: 处理函数，接收(iter_idx, sample)参数，返回(iter_idx, result_entry, error)
-        max_workers: 最大工作线程数，默认为5
-        output_file: 输出结果文件名，默认为"test_results.json"
-    
-    Returns:
-        int: 处理的总迭代次数
+    使用多线程处理数据集样本。
+
+    `thread_executor` 只负责调度和结果落盘，具体 agent 工作流由 `process_func`
+    处理。每个 worker 接收一个 `AgentTask`，返回 `AgentTaskResult`。
     """
-    results_by_iter = {}
+    results_by_iter: dict[int, dict[str, Any]] = {}
     futures = []
     iteration = 0
+    options = AgentExecutionOptions(
+        save_agent_mem=save_agent_mem,
+        agent_mem_file=agent_mem_file,
+        run_mode=run_mode,
+    )
 
-    # Dispatch processing to worker threads while keeping data read and writes on the main thread
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         while True:
             try:
@@ -28,24 +71,24 @@ def run_multithreaded_processing(dataset_iter, process_func, max_workers=5, outp
                 break
 
             iteration += 1
-            futures.append(executor.submit(process_func, iteration, sample))
+            task = AgentTask(iteration=iteration, sample=sample, options=options)
+            futures.append(executor.submit(process_func, task))
             print(f"Queued iteration {iteration} for processing...")
 
         for future in as_completed(futures):
-            iter_idx, result_entry, error = future.result()
+            task_result = _normalize_result(future.result())
 
-            if error:
-                print(f"Iteration {iter_idx} ✗ Error encountered. Full traceback:")
-                print(error)
+            if task_result.error:
+                print(f"Iteration {task_result.iteration} ✗ Error encountered. Full traceback:")
+                print(task_result.error)
                 continue
 
-            results_by_iter[iter_idx] = result_entry
-            ordered_results = [results_by_iter[i] for i in sorted(results_by_iter)]
+            if task_result.result_entry is None:
+                print(f"Iteration {task_result.iteration} ✗ Missing result entry.")
+                continue
 
-            with open(output_file, "w") as f:
-                json.dump(ordered_results, f, indent=2, ensure_ascii=False)
-
-            print(f"Iteration {iter_idx} ✓ Completed")
+            results_by_iter[task_result.iteration] = task_result.result_entry
+            _write_ordered_results(results_by_iter, output_file)
+            print(f"Iteration {task_result.iteration} ✓ Completed")
 
     return iteration
-

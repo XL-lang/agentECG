@@ -1,0 +1,14 @@
+api:
+  llm:
+    aliyun:
+      qwen-plus:
+        model: openai/qwen-plus
+        api_key: "YOUR_DASHSCOPE_API_KEY"
+        api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+      qwen-vl-plus:
+        model: qwen-vl-plus
+        api_key: "YOUR_DASHSCOPE_API_KEY"
+        api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+  search-engine:
+    google:
+      api_key: "YOUR_GOOGLE_SEARCH_API_KEY"
