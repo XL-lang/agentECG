@@ -16,7 +16,7 @@ Submit an ECG file and a question:
 curl -X POST http://127.0.0.1:8000/api/upload/analyze \
   -F "question=请解释这份心电图中最主要的异常表现。" \
   -F "fs=500" \
-  -F "ecg_file=@tmp/ecgdeli_example_input.csv"
+  -F "ecg_file=@/path/to/your_ecg.csv"
 ```
 
 Parameters:
@@ -24,8 +24,6 @@ Parameters:
 - `question`: question to ask about the ECG.
 - `fs`: sampling rate in Hz.
 - `ecg_file`: CSV ECG matrix, shaped as `samples x leads`; the first row may contain lead names or signal values.
-
-The included sample file [tmp/ecgdeli_example_input.csv](/home/xl/agentECG/tmp/ecgdeli_example_input.csv) can be used for a first local request.
 
 ## 2. Web 页面
 

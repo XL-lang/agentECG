@@ -28,6 +28,7 @@ utils/model.yaml
 # Test and experiment outputs.
 test_tools/results/
 tmp/*.log
+tmp/*.csv
 tmp/*results*.json
 tmp/web_agent_memories.json
 tmp/web_snapshots/
