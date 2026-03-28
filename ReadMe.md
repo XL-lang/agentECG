@@ -1,67 +1,110 @@
 # agentECG
 
-面向 ECG 问答与技能构建的多 Agent 项目。仓库默认不提交真实模型密钥和数据集内容；本地运行前需要先准备模型配置、可选知识库连接和数据集目录。
+agentECG 用于对 ECG 记录进行问答分析。上传一份 ECG CSV，输入想检查的问题，即可获得分析结论和依据摘要。
 
-## 1. 环境配置
+## 1. 快速开始
 
-### 1.1 Python / Conda
-
-建议使用独立环境运行：
+Start the local service:
 
 ```bash
-conda create -n agentecg python=3.10 -y
-conda activate agentecg
+uvicorn webapp:app --host 127.0.0.1 --port 8000
 ```
 
-项目根目录没有统一的依赖锁文件，至少需要保证下列核心依赖可用：
+Submit an ECG file and a question:
 
-- `smolagents`
-- `openai`
-- `PyYAML`
-- `qdrant-client`
-- 项目运行所需的数值与 ECG 处理依赖
+```bash
+curl -X POST http://127.0.0.1:8000/api/upload/analyze \
+  -F "question=请解释这份心电图中最主要的异常表现。" \
+  -F "fs=500" \
+  -F "ecg_file=@tmp/ecgdeli_example_input.csv"
+```
 
-如果你还要训练 `models/pytorch_inception` 下的分类模型，另见 [models/pytorch_inception/README_ECGQA_TRAINING.md](/home/xl/agentECG/models/pytorch_inception/README_ECGQA_TRAINING.md)。
+Parameters:
 
-### 1.2 模型密钥配置
+- `question`: question to ask about the ECG.
+- `fs`: sampling rate in Hz.
+- `ecg_file`: CSV ECG matrix, shaped as `samples x leads`; the first row may contain lead names or signal values.
 
-真实密钥文件使用本地私有配置 [utils/model.yaml](/home/xl/agentECG/utils/model.yaml)，该文件已加入 `.gitignore`，不会默认提交。
+The included sample file [tmp/ecgdeli_example_input.csv](/home/xl/agentECG/tmp/ecgdeli_example_input.csv) can be used for a first local request.
 
-先从模板复制：
+## 2. Web 页面
+
+Open the app:
+
+```text
+http://127.0.0.1:8000/
+```
+
+The web interface has two workflows:
+
+- `Analyze ECG`: upload an ECG CSV, enter a question, and review the answer with supporting evidence.
+- `Browse snapshots`: inspect published demo results, including ECG images, model answers, reference answers, and evidence summaries.
+
+Analyze ECG:
+
+![agentECG 自主上传页面](docs/images/agentecg-web-upload.png)
+
+Browse snapshots:
+
+![agentECG 离线浏览页面](docs/images/agentecg-web-browse.png)
+
+To publish demo results for browsing:
+
+```bash
+python webapp.py publish \
+  --result-file tmp/web_results.json \
+  --agent-mem-file tmp/web_agent_memories.json
+```
+
+To run the included five-query demo and publish it:
+
+```bash
+python tmp/run_five_queries_to_snapshot.py
+```
+
+Published demo files are stored under:
+
+```text
+tmp/web_snapshots/
+```
+
+## 3. 安装与配置
+
+Create a Python environment:
+
+```bash
+conda create -n ts python=3.10 -y
+conda activate ts
+```
+
+Install the runtime dependencies used by the web app and analysis pipeline:
+
+```bash
+pip install fastapi uvicorn python-multipart wfdb matplotlib numpy torch
+pip install smolagents openai PyYAML qdrant-client
+```
+
+Training the classifier under `models/pytorch_inception` uses a separate setup. See [models/pytorch_inception/README_ECGQA_TRAINING.md](/home/xl/agentECG/models/pytorch_inception/README_ECGQA_TRAINING.md).
+
+### Configure model credentials
+
+Create a private model config from the template:
 
 ```bash
 cp utils/model.example.yaml utils/model.yaml
 ```
 
-然后填写你自己的密钥。当前代码 [utils/model.py](/home/xl/agentECG/utils/model.py) 会直接读取这个 YAML，至少需要配置：
+Fill in [utils/model.yaml](/home/xl/agentECG/utils/model.yaml). The runtime expects these entries:
 
 - `api.llm.aliyun.qwen-plus`
 - `api.llm.aliyun.qwen-vl-plus`
 - `api.search-engine.google`
 
-说明：
+`utils/model.yaml` is ignored by Git and should not be committed.
 
-- `qwen-plus`：文本推理和搜索问答使用。
-- `qwen-vl-plus`：VLM 切片审计等视觉能力使用。
-- `google.api_key`：保留在配置模板中；是否实际使用取决于你的上层搜索链路。
+### Optional: connect Qdrant
 
-### 1.3 知识库连接
-
-知识库检索由 [mAgents/function_search_tool.py](/home/xl/agentECG/mAgents/function_search_tool.py) 读取环境变量配置，不走 `utils/model.yaml`。
-
-支持的环境变量：
-
-- `SEARCH_KB_BACKEND`
-- `QDRANT_URL`
-- `QDRANT_HOST`
-- `QDRANT_PORT`
-- `QDRANT_COLLECTION`
-- `QDRANT_API_KEY`
-- `QDRANT_TOP_K`
-- `QDRANT_QUERY_MODEL`
-- `SEARCH_KB_TIMEOUT_SECONDS`
-
-最小可用示例：
+The knowledge search tool reads Qdrant settings from environment variables:
 
 ```bash
 export SEARCH_KB_BACKEND=qdrant
@@ -72,55 +115,33 @@ export QDRANT_QUERY_MODEL=sentence-transformers/all-MiniLM-L6-v2
 export SEARCH_KB_TIMEOUT_SECONDS=2
 ```
 
-可选替代写法：
+Use `QDRANT_HOST` + `QDRANT_PORT` instead of `QDRANT_URL` if that fits your deployment. Add `QDRANT_API_KEY` for private Qdrant instances.
 
-- 不写 `QDRANT_URL` 时，可以改用 `QDRANT_HOST` + `QDRANT_PORT`。
-- 私有部署时可额外设置 `QDRANT_API_KEY`。
+## 4. Demo Data and Evaluation Data
 
-如果没有配置 Qdrant，或 Qdrant 健康检查 / 查询失败，`search_tool` 会自动回退到联网搜索。
+普通上传分析不需要下载 ECG-QA / PTB-XL 数据。数据集只用于发布 demo snapshots、批量评测和 skill building。
 
-## 2. 数据集位置
-
-### 2.1 默认目录
-
-[data_loader.py](/home/xl/agentECG/data_loader.py) 默认读取：
+The default evaluation data path is:
 
 ```text
 dataset/ecgqa_ptbxl/paraphrased/train
 ```
 
-也就是说，运行主流程前至少要让 ECG-QA 派生数据出现在这个目录，或者在代码里显式传入 `ptbxl_dir_path`。
-
-### 2.2 下载方式
-
-仓库根目录的 [load_dataset.sh](/home/xl/agentECG/load_dataset.sh) 会把数据下载到 `dataset/` 下，包含：
-
-- `ecg-qa` Git 仓库
-- PTB-XL 压缩包下载与解压
-
-运行示例：
+Download ECG-QA and PTB-XL assets:
 
 ```bash
 bash load_dataset.sh
 ```
 
-说明：
+Notes:
 
-- `dataset/` 目录已保留在仓库中，但真实数据内容默认不进入 Git。
-- 数据目录较大，不建议直接提交到 GitHub。
-- 如果你已经手动准备好了数据，只要路径和代码约定一致，不必执行下载脚本。
+- The repository keeps the `dataset/` structure, not the full dataset contents.
+- Dataset files are large and should stay out of Git.
+- If the data already exists locally, place it at the expected path and skip the download script.
 
-## 3. 使用方法
+## 5. Batch Evaluation
 
-### 3.1 最小运行示例
-
-主流程由三部分组成：
-
-- [data_loader.py](/home/xl/agentECG/data_loader.py) 负责构造数据集迭代器
-- [thread_executor.py](/home/xl/agentECG/thread_executor.py) 负责并发调度和结果落盘
-- [agent_runner.py](/home/xl/agentECG/agent_runner.py) 中的 `process_sample(...)` 负责单样本 Agent 流水线
-
-最小示例：
+Use batch evaluation when you want to run agentECG on ECG-QA style samples instead of one uploaded ECG file.
 
 ```python
 from data_loader import initialize_dataset
@@ -129,7 +150,7 @@ from agent_runner import process_sample
 
 _, dataset_iter = initialize_dataset(
     ptbxl_dir_path="dataset/ecgqa_ptbxl/paraphrased/train",
-    question_types=["single-choose"],
+    question_types=["single-query"],
     sample_limit=20,
     shuffle=True,
     seed=42,
@@ -146,93 +167,26 @@ run_multithreaded_processing(
 )
 ```
 
-### 3.2 关键参数
+Run modes:
 
-`run_multithreaded_processing(...)` 当前关键参数如下：
+- `eval`: batch evaluation without writing new skills.
+- `skill_build`: reflective runs that can extract reusable skills; use low concurrency, usually `max_workers=1`.
 
-- `max_workers`：并发 worker 数
-- `output_file`：结果 JSON 输出路径
-- `save_agent_mem`：是否把 agent memory 落盘
-- `agent_mem_file`：agent memory 文件路径
-- `run_mode`：运行模式，当前支持 `eval` 和 `skill_build`
-
-建议：
-
-- 普通评测建议 `max_workers=2~5`
-- `skill_build` 模式建议并发更低，避免反思与检索链路同时放大 API 压力
-
-### 3.3 `eval` 模式
-
-`eval` 用于常规跑分和结果验证，不做技能生成落库。
-
-推荐配置：
-
-```python
-run_multithreaded_processing(
-    dataset_iter=dataset_iter,
-    process_func=process_sample,
-    max_workers=2,
-    output_file="tmp/run_eval.json",
-    save_agent_mem=False,
-    agent_mem_file="tmp/run_eval_agent_mem.json",
-    run_mode="eval",
-)
-```
-
-特点：
-
-- 不从 registry 读取可复用技能
-- 不执行失败反思后的 skill build 逻辑
-- 输出中仍会记录 `run_mode`
-
-### 3.4 `skill_build` 模式
-
-`skill_build` 用于构建和更新可复用微技能。
-
-推荐配置：
-
-```python
-run_multithreaded_processing(
-    dataset_iter=dataset_iter,
-    process_func=process_sample,
-    max_workers=1,
-    output_file="tmp/run_skill_build.json",
-    save_agent_mem=False,
-    agent_mem_file="tmp/run_skill_build_agent_mem.json",
-    run_mode="skill_build",
-)
-```
-
-特点：
-
-- 会在 pre-analysis 和 data-analysis 阶段检索已有技能
-- 答错时会触发 VLM 切片审计、反思与 retry
-- 成功样本会尝试抽取可复用技能并写入 registry
-
-默认技能注册表位于：
+Default skill registry:
 
 ```text
 agent_reflect/storage/agent_skill_registry.json
 ```
 
-### 3.5 后台运行
-
-示例：
+Long-running job example:
 
 ```bash
-conda run -n agentecg python your_run_script.py
+nohup conda run -n ts python your_run_script.py > run.log 2>&1 &
 ```
 
-或：
+## 6. Troubleshooting
 
-```bash
-nohup conda run -n agentecg python your_run_script.py > run.log 2>&1 &
-```
-
-如果你沿用仓库里的临时脚本风格，也可以把单次实验脚本放在 `tmp/` 下，再用上述方式启动。
-
-## 4. 额外说明
-
-- `utils/model.yaml` 是本地私有文件，不要提交。
-- 如果真实密钥曾经进入 Git 历史，应立即去服务端轮换。
-- 分类模型训练说明不放在主 README，单独见 [models/pytorch_inception/README_ECGQA_TRAINING.md](/home/xl/agentECG/models/pytorch_inception/README_ECGQA_TRAINING.md)。
+- `ModuleNotFoundError`: install the missing runtime dependency, commonly `torch`, `wfdb`, or an Agent dependency.
+- Model credential errors: check [utils/model.yaml](/home/xl/agentECG/utils/model.yaml).
+- Empty or malformed upload results: verify the CSV is numeric and shaped as `samples x leads`.
+- agentECG is for research, demos, and evaluation workflows; it is not a medical device.

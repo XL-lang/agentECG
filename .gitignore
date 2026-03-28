@@ -15,6 +15,7 @@ __pycache__/
 *.log
 app.log
 *.png
+!docs/images/agentecg-web-*.png
 ecg_output.png
 
 # Model artifacts and serialized training outputs.
@@ -28,9 +29,15 @@ utils/model.yaml
 test_tools/results/
 tmp/*.log
 tmp/*results*.json
+tmp/web_agent_memories.json
+tmp/web_snapshots/
+tmp/web_uploads/
 tmp/ecgdeli_example_out/
 tmp/ecgdeli_granular_*/
 tmp/ecgdeli_run_*/
 
 # Sample input data kept local.
 example_ecg/*
+
+# External tool checkouts and local binary installers.
+external/
