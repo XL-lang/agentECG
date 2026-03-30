@@ -38,13 +38,9 @@ The web interface has two workflows:
 - `Analyze ECG`: upload an ECG CSV, enter a question, and review the answer with supporting evidence.
 - `Browse snapshots`: inspect published demo results, including ECG images, model answers, reference answers, and evidence summaries.
 
-Analyze ECG:
+Correct result example:
 
-![agentECG 自主上传页面](docs/images/agentecg-web-upload.png)
-
-Browse snapshots:
-
-![agentECG 离线浏览页面](docs/images/agentecg-web-browse.png)
+![agentECG 正确执行示例](docs/images/agentecg-web-browse.png)
 
 To publish demo results for browsing:
 
